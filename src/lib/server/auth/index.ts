@@ -14,7 +14,7 @@ export const auth = betterAuth({
 			verification: schema.verifications
 		}
 	}),
-	secret: env.BETTER_AUTH_SECRET,
+	secret: env.BETTER_AUTH_SECRET || 'build-time-placeholder-not-used-at-runtime',
 	baseURL: env.PUBLIC_APP_URL,
 	emailAndPassword: {
 		enabled: true,
