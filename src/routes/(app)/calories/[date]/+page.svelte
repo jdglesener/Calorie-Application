@@ -59,8 +59,8 @@
 	let showSearch = $state(false);
 
 	const today = new Date().toLocaleDateString('en-CA');
-	const prevDate = getPrevDate(data.date);
-	const nextDate = getNextDate(data.date);
+	const prevDate = $derived(getPrevDate(data.date));
+	const nextDate = $derived(getNextDate(data.date));
 
 	function getPrevDate(d: string) {
 		const dt = new Date(d + 'T12:00:00');

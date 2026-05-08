@@ -257,6 +257,7 @@
 	<div class="card-body space-y-4">
 		{#if mode === 'search'}
 			<div class="flex gap-2">
+				<!-- svelte-ignore a11y_autofocus -->
 				<input
 					type="search"
 					bind:value={searchQuery}
@@ -333,8 +334,9 @@
 
 					<div class="grid grid-cols-2 gap-3">
 						<div>
-							<label class="label text-xs">Servings</label>
+							<label for="fs-servings" class="label text-xs">Servings</label>
 							<input
+								id="fs-servings"
 								type="number"
 								bind:value={servings}
 								min="0.25"
@@ -343,8 +345,8 @@
 							/>
 						</div>
 						<div>
-							<label class="label text-xs">Meal</label>
-							<select bind:value={mealType} class="input">
+							<label for="fs-meal" class="label text-xs">Meal</label>
+							<select id="fs-meal" bind:value={mealType} class="input">
 								<option value="BREAKFAST">Breakfast</option>
 								<option value="LUNCH">Lunch</option>
 								<option value="DINNER">Dinner</option>
@@ -372,24 +374,25 @@
 			<div class="space-y-4">
 				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 					<div class="sm:col-span-2">
-						<label class="label text-xs">Food name <span class="text-red-400">*</span></label>
-						<input type="text" bind:value={createName} class="input" placeholder="e.g. Homemade granola" autofocus />
+						<label for="create-name" class="label text-xs">Food name <span class="text-red-400">*</span></label>
+						<!-- svelte-ignore a11y_autofocus -->
+						<input id="create-name" type="text" bind:value={createName} class="input" placeholder="e.g. Homemade granola" autofocus />
 					</div>
 					<div class="sm:col-span-2">
-						<label class="label text-xs">Brand <span class="text-gray-400 font-normal">(optional)</span></label>
-						<input type="text" bind:value={createBrand} class="input" placeholder="e.g. Trader Joe's" />
+						<label for="create-brand" class="label text-xs">Brand <span class="text-gray-400 font-normal">(optional)</span></label>
+						<input id="create-brand" type="text" bind:value={createBrand} class="input" placeholder="e.g. Trader Joe's" />
 					</div>
 					<div>
-						<label class="label text-xs">Serving size <span class="text-red-400">*</span></label>
-						<input type="number" bind:value={createServingSize} min="0.1" step="0.1" class="input" placeholder="1" />
+						<label for="create-size" class="label text-xs">Serving size <span class="text-red-400">*</span></label>
+						<input id="create-size" type="number" bind:value={createServingSize} min="0.1" step="0.1" class="input" placeholder="1" />
 					</div>
 					<div>
-						<label class="label text-xs">Serving unit <span class="text-red-400">*</span></label>
-						<input type="text" bind:value={createServingUnit} class="input" placeholder="serving, cup, oz…" />
+						<label for="create-unit" class="label text-xs">Serving unit <span class="text-red-400">*</span></label>
+						<input id="create-unit" type="text" bind:value={createServingUnit} class="input" placeholder="serving, cup, oz…" />
 					</div>
 					<div class="sm:col-span-2">
-						<label class="label text-xs">Calories per serving <span class="text-red-400">*</span></label>
-						<input type="number" bind:value={createCalories} min="0" step="1" class="input" placeholder="0" />
+						<label for="create-cal" class="label text-xs">Calories per serving <span class="text-red-400">*</span></label>
+						<input id="create-cal" type="number" bind:value={createCalories} min="0" step="1" class="input" placeholder="0" />
 					</div>
 				</div>
 
@@ -397,16 +400,16 @@
 					<p class="label text-xs mb-2">Macros per serving <span class="text-gray-400 font-normal">(optional)</span></p>
 					<div class="grid grid-cols-3 gap-3">
 						<div>
-							<label class="label text-xs text-blue-600">Protein (g)</label>
-							<input type="number" bind:value={createProtein} min="0" step="0.1" class="input" placeholder="—" />
+							<label for="create-protein" class="label text-xs text-blue-600">Protein (g)</label>
+							<input id="create-protein" type="number" bind:value={createProtein} min="0" step="0.1" class="input" placeholder="—" />
 						</div>
 						<div>
-							<label class="label text-xs text-amber-600">Carbs (g)</label>
-							<input type="number" bind:value={createCarbs} min="0" step="0.1" class="input" placeholder="—" />
+							<label for="create-carbs" class="label text-xs text-amber-600">Carbs (g)</label>
+							<input id="create-carbs" type="number" bind:value={createCarbs} min="0" step="0.1" class="input" placeholder="—" />
 						</div>
 						<div>
-							<label class="label text-xs text-rose-500">Fat (g)</label>
-							<input type="number" bind:value={createFat} min="0" step="0.1" class="input" placeholder="—" />
+							<label for="create-fat" class="label text-xs text-rose-500">Fat (g)</label>
+							<input id="create-fat" type="number" bind:value={createFat} min="0" step="0.1" class="input" placeholder="—" />
 						</div>
 					</div>
 				</div>

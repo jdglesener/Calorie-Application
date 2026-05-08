@@ -288,16 +288,16 @@
 			</div>
 			<div class="card-body grid grid-cols-1 gap-5 sm:grid-cols-2">
 				<div>
-					<label class="label">Display Name</label>
-					<input type="text" bind:value={displayName} class="input" placeholder="How you appear to others" />
+					<label for="displayName" class="label">Display Name</label>
+					<input id="displayName" type="text" bind:value={displayName} class="input" placeholder="How you appear to others" />
 				</div>
 				<div>
-					<label class="label">Date of Birth</label>
-					<input type="date" bind:value={dateOfBirth} class="input" />
+					<label for="dateOfBirth" class="label">Date of Birth</label>
+					<input id="dateOfBirth" type="date" bind:value={dateOfBirth} class="input" />
 				</div>
 				<div>
-					<label class="label">Sex <span class="text-gray-400 font-normal">(used for calorie calc)</span></label>
-					<select bind:value={sex} class="input">
+					<label for="sex" class="label">Sex <span class="text-gray-400 font-normal">(used for calorie calc)</span></label>
+					<select id="sex" bind:value={sex} class="input">
 						<option value="male">Male</option>
 						<option value="female">Female</option>
 					</select>
@@ -315,6 +315,7 @@
 				<!-- Height -->
 				{#if useImperial}
 					<div>
+						<!-- svelte-ignore a11y_label_has_associated_control -->
 						<label class="label">Height</label>
 						<div class="flex gap-2">
 							<div class="flex-1 relative">
@@ -324,6 +325,7 @@
 									min="3" max="8" step="1"
 									class="input pr-8"
 									placeholder="5"
+									aria-label="Feet"
 									oninput={onFtInChange}
 								/>
 								<span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">ft</span>
@@ -335,6 +337,7 @@
 									min="0" max="11" step="1"
 									class="input pr-8"
 									placeholder="10"
+									aria-label="Inches"
 									oninput={onFtInChange}
 								/>
 								<span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">in</span>
@@ -342,6 +345,7 @@
 						</div>
 					</div>
 					<div>
+						<!-- svelte-ignore a11y_label_has_associated_control -->
 						<label class="label">Current Weight</label>
 						<div class="relative">
 							<input
@@ -350,12 +354,14 @@
 								min="60" max="700" step="0.5"
 								class="input pr-10"
 								placeholder="160"
+								aria-label="Current weight in pounds"
 								oninput={onLbsChange}
 							/>
 							<span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">lbs</span>
 						</div>
 					</div>
 					<div>
+						<!-- svelte-ignore a11y_label_has_associated_control -->
 						<label class="label">Target Weight</label>
 						<div class="relative">
 							<input
@@ -364,6 +370,7 @@
 								min="60" max="700" step="0.5"
 								class="input pr-10"
 								placeholder="Optional"
+								aria-label="Target weight in pounds"
 								oninput={onTargetLbsChange}
 							/>
 							<span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">lbs</span>
@@ -371,16 +378,16 @@
 					</div>
 				{:else}
 					<div>
-						<label class="label">Height (cm)</label>
-						<input type="number" bind:value={heightCm} min="100" max="250" step="0.5" class="input" placeholder="170" />
+						<label for="heightCm" class="label">Height (cm)</label>
+						<input id="heightCm" type="number" bind:value={heightCm} min="100" max="250" step="0.5" class="input" placeholder="170" />
 					</div>
 					<div>
-						<label class="label">Current Weight (kg)</label>
-						<input type="number" bind:value={weightKg} min="30" max="300" step="0.1" class="input" placeholder="70" />
+						<label for="weightKg" class="label">Current Weight (kg)</label>
+						<input id="weightKg" type="number" bind:value={weightKg} min="30" max="300" step="0.1" class="input" placeholder="70" />
 					</div>
 					<div>
-						<label class="label">Target Weight (kg)</label>
-						<input type="number" bind:value={targetWeightKg} min="30" max="300" step="0.1" class="input" placeholder="Optional" />
+						<label for="targetWeightKg" class="label">Target Weight (kg)</label>
+						<input id="targetWeightKg" type="number" bind:value={targetWeightKg} min="30" max="300" step="0.1" class="input" placeholder="Optional" />
 					</div>
 				{/if}
 			</div>
@@ -455,9 +462,9 @@
 			</div>
 			<div class="card-body space-y-5">
 				<div>
-					<label class="label">Daily Calorie Goal</label>
+					<label for="dailyCalorieGoal" class="label">Daily Calorie Goal</label>
 					<div class="flex items-center gap-3">
-						<input type="number" bind:value={dailyCalorieGoal} min="1000" max="10000" step="50" class="input max-w-xs" />
+						<input id="dailyCalorieGoal" type="number" bind:value={dailyCalorieGoal} min="1000" max="10000" step="50" class="input max-w-xs" />
 						<span class="text-sm text-gray-400">calories / day</span>
 					</div>
 				</div>
@@ -465,22 +472,22 @@
 					<p class="label mb-3">Macro Goals <span class="text-gray-400 font-normal">(optional)</span></p>
 					<div class="grid grid-cols-3 gap-4">
 						<div>
-							<label class="label text-blue-600 text-xs">Protein (g)</label>
-							<input type="number" bind:value={proteinGoalG} min="0" step="1" class="input" placeholder="—" />
+							<label for="proteinGoalG" class="label text-blue-600 text-xs">Protein (g)</label>
+							<input id="proteinGoalG" type="number" bind:value={proteinGoalG} min="0" step="1" class="input" placeholder="—" />
 							{#if proteinGoalG !== ''}
 								<p class="text-xs text-gray-400 mt-1">{Number(proteinGoalG) * 4} cal</p>
 							{/if}
 						</div>
 						<div>
-							<label class="label text-amber-600 text-xs">Carbs (g)</label>
-							<input type="number" bind:value={carbsGoalG} min="0" step="1" class="input" placeholder="—" />
+							<label for="carbsGoalG" class="label text-amber-600 text-xs">Carbs (g)</label>
+							<input id="carbsGoalG" type="number" bind:value={carbsGoalG} min="0" step="1" class="input" placeholder="—" />
 							{#if carbsGoalG !== ''}
 								<p class="text-xs text-gray-400 mt-1">{Number(carbsGoalG) * 4} cal</p>
 							{/if}
 						</div>
 						<div>
-							<label class="label text-rose-500 text-xs">Fat (g)</label>
-							<input type="number" bind:value={fatGoalG} min="0" step="1" class="input" placeholder="—" />
+							<label for="fatGoalG" class="label text-rose-500 text-xs">Fat (g)</label>
+							<input id="fatGoalG" type="number" bind:value={fatGoalG} min="0" step="1" class="input" placeholder="—" />
 							{#if fatGoalG !== ''}
 								<p class="text-xs text-gray-400 mt-1">{Number(fatGoalG) * 9} cal</p>
 							{/if}

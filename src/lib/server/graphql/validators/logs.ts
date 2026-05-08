@@ -3,6 +3,11 @@ import { z } from 'zod';
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const dateString = z.string().regex(DATE_REGEX, 'Must be YYYY-MM-DD');
 
+const mealTypeField = z.preprocess(
+	(v) => (typeof v === 'string' ? v.toLowerCase() : v),
+	z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other'])
+).optional();
+
 export const upsertDailyLogSchema = z.object({
 	date: dateString,
 	calorieGoal: z.number().int().positive().optional(),
@@ -20,11 +25,7 @@ export const addFoodEntrySchema = z.object({
 	proteinG: z.number().nonnegative().optional(),
 	carbsG: z.number().nonnegative().optional(),
 	fatG: z.number().nonnegative().optional(),
-	mealType: z
-		.string()
-		.transform((v) => v.toLowerCase())
-		.pipe(z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other']))
-		.optional()
+	mealType: mealTypeField
 });
 
 export const updateFoodEntrySchema = z.object({
@@ -33,11 +34,7 @@ export const updateFoodEntrySchema = z.object({
 	proteinG: z.number().nonnegative().optional(),
 	carbsG: z.number().nonnegative().optional(),
 	fatG: z.number().nonnegative().optional(),
-	mealType: z
-		.string()
-		.transform((v) => v.toLowerCase())
-		.pipe(z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other']))
-		.optional()
+	mealType: mealTypeField
 });
 
 export type UpsertDailyLogInput = z.infer<typeof upsertDailyLogSchema>;

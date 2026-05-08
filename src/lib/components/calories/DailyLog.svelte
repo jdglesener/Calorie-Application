@@ -148,8 +148,9 @@
 									<p class="text-sm font-medium text-gray-900">{entry.foodName}</p>
 									<div class="grid grid-cols-2 gap-3">
 										<div>
-											<label class="label text-xs">Servings</label>
+											<label for="edit-servings" class="label text-xs">Servings</label>
 											<input
+												id="edit-servings"
 												type="number"
 												bind:value={editServings}
 												min="0.25"
@@ -158,8 +159,8 @@
 											/>
 										</div>
 										<div>
-											<label class="label text-xs">Meal</label>
-											<select bind:value={editMealType} class="input">
+											<label for="edit-meal" class="label text-xs">Meal</label>
+											<select id="edit-meal" bind:value={editMealType} class="input">
 												<option value="BREAKFAST">Breakfast</option>
 												<option value="LUNCH">Lunch</option>
 												<option value="DINNER">Dinner</option>

@@ -8,40 +8,40 @@
 
 	const client = getContextClient();
 
-	const dailyLogQuery = queryStore({
-		client,
-		query: gql`
-			query DashboardLog($date: Date!) {
-				dailyLog(date: $date) {
+	const DASHBOARD_QUERY = gql`
+		query DashboardLog($date: Date!) {
+			dailyLog(date: $date) {
+				id
+				logDate
+				calorieGoal
+				totalCalories
+				totalProteinG
+				totalCarbsG
+				totalFatG
+				entries {
 					id
-					logDate
-					calorieGoal
-					totalCalories
-					totalProteinG
-					totalCarbsG
-					totalFatG
-					entries {
-						id
-						foodName
-						calories
-						mealType
-					}
-				}
-				calorieStreak
-				me {
-					name
-					profile {
-						dailyCalorieGoal
-						displayName
-						proteinGoalG
-						carbsGoalG
-						fatGoalG
-					}
+					foodName
+					calories
+					mealType
 				}
 			}
-		`,
-		variables: { date: data.today }
-	});
+			calorieStreak
+			me {
+				name
+				profile {
+					dailyCalorieGoal
+					displayName
+					proteinGoalG
+					carbsGoalG
+					fatGoalG
+				}
+			}
+		}
+	`;
+
+	const dailyLogQuery = $derived(
+		queryStore({ client, query: DASHBOARD_QUERY, variables: { date: data.today } })
+	);
 
 	const log = $derived($dailyLogQuery.data?.dailyLog);
 	const streak = $derived($dailyLogQuery.data?.calorieStreak ?? 0);
