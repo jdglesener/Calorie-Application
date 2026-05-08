@@ -20,13 +20,24 @@ export const addFoodEntrySchema = z.object({
 	proteinG: z.number().nonnegative().optional(),
 	carbsG: z.number().nonnegative().optional(),
 	fatG: z.number().nonnegative().optional(),
-	mealType: z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other']).optional()
+	mealType: z
+		.string()
+		.transform((v) => v.toLowerCase())
+		.pipe(z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other']))
+		.optional()
 });
 
 export const updateFoodEntrySchema = z.object({
 	servingsConsumed: z.number().positive().optional(),
 	calories: z.number().int().nonnegative().optional(),
-	mealType: z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other']).optional()
+	proteinG: z.number().nonnegative().optional(),
+	carbsG: z.number().nonnegative().optional(),
+	fatG: z.number().nonnegative().optional(),
+	mealType: z
+		.string()
+		.transform((v) => v.toLowerCase())
+		.pipe(z.enum(['breakfast', 'lunch', 'dinner', 'snack', 'other']))
+		.optional()
 });
 
 export type UpsertDailyLogInput = z.infer<typeof upsertDailyLogSchema>;

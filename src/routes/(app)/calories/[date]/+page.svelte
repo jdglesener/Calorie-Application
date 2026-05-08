@@ -38,6 +38,9 @@
 			me {
 				profile {
 					dailyCalorieGoal
+					proteinGoalG
+					carbsGoalG
+					fatGoalG
 				}
 			}
 		}
@@ -48,26 +51,27 @@
 	);
 
 	const log = $derived($logStore.data?.dailyLog);
-	const calorieGoal = $derived(
-		log?.calorieGoal ?? $logStore.data?.me?.profile?.dailyCalorieGoal ?? 2000
-	);
+	const calorieGoal = $derived(log?.calorieGoal ?? $logStore.data?.me?.profile?.dailyCalorieGoal ?? 2000);
+	const proteinGoal = $derived($logStore.data?.me?.profile?.proteinGoalG ?? null);
+	const carbsGoal = $derived($logStore.data?.me?.profile?.carbsGoalG ?? null);
+	const fatGoal = $derived($logStore.data?.me?.profile?.fatGoalG ?? null);
 
 	let showSearch = $state(false);
 
-	const today = new Date().toISOString().slice(0, 10);
+	const today = new Date().toLocaleDateString('en-CA');
 	const prevDate = getPrevDate(data.date);
 	const nextDate = getNextDate(data.date);
 
 	function getPrevDate(d: string) {
 		const dt = new Date(d + 'T12:00:00');
 		dt.setDate(dt.getDate() - 1);
-		return dt.toISOString().slice(0, 10);
+		return dt.toLocaleDateString('en-CA');
 	}
 
 	function getNextDate(d: string) {
 		const dt = new Date(d + 'T12:00:00');
 		dt.setDate(dt.getDate() + 1);
-		return dt.toISOString().slice(0, 10);
+		return dt.toLocaleDateString('en-CA');
 	}
 
 	function handleEntryAdded() {
@@ -81,6 +85,15 @@
 	}
 
 	function handleEntryDeleted() {
+		logStore = queryStore({
+			client,
+			query: DAILY_LOG_QUERY,
+			variables: { date: data.date },
+			requestPolicy: 'network-only'
+		});
+	}
+
+	function handleEntryEdited() {
 		logStore = queryStore({
 			client,
 			query: DAILY_LOG_QUERY,
@@ -134,6 +147,9 @@
 			protein={log?.totalProteinG ?? 0}
 			carbs={log?.totalCarbsG ?? 0}
 			fat={log?.totalFatG ?? 0}
+			{proteinGoal}
+			{carbsGoal}
+			{fatGoal}
 		/>
 
 		{#if showSearch}
@@ -144,6 +160,6 @@
 			</button>
 		{/if}
 
-		<DailyLog entries={log?.entries ?? []} date={data.date} onDeleted={handleEntryDeleted} />
+		<DailyLog entries={log?.entries ?? []} date={data.date} onDeleted={handleEntryDeleted} onEdited={handleEntryEdited} />
 	{/if}
 </div>

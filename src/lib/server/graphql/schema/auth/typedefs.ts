@@ -14,10 +14,15 @@ export const authTypeDefs = `#graphql
 		avatarUrl: String
 		heightCm: Float
 		weightKg: Float
+		targetWeightKg: Float
 		dateOfBirth: Date
+		sex: String
 		activityLevel: ActivityLevel
 		goalType: GoalType
 		dailyCalorieGoal: Int
+		proteinGoalG: Int
+		carbsGoalG: Int
+		fatGoalG: Int
 	}
 
 	type PublicUserProfile {
@@ -45,10 +50,15 @@ export const authTypeDefs = `#graphql
 		displayName: String
 		heightCm: Float
 		weightKg: Float
+		targetWeightKg: Float
 		dateOfBirth: Date
+		sex: String
 		activityLevel: ActivityLevel
 		goalType: GoalType
 		dailyCalorieGoal: Int
+		proteinGoalG: Int
+		carbsGoalG: Int
+		fatGoalG: Int
 	}
 
 	extend type Query {

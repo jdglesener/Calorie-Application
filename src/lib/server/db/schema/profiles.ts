@@ -27,6 +27,11 @@ export const userProfiles = pgTable('user_profiles', {
 	activityLevel: activityLevelEnum('activity_level').default('sedentary'),
 	goalType: goalTypeEnum('goal_type').default('maintain'),
 	dailyCalorieGoal: integer('daily_calorie_goal').default(2000),
+	proteinGoalG: integer('protein_goal_g'),
+	carbsGoalG: integer('carbs_goal_g'),
+	fatGoalG: integer('fat_goal_g'),
+	targetWeightKg: numeric('target_weight_kg', { precision: 5, scale: 2 }),
+	sex: text('sex'),
 	createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 	updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
 });

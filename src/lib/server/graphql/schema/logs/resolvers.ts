@@ -53,7 +53,7 @@ export const logsResolvers = {
 			for (let i = 0; i < rows.length; i++) {
 				const expected = new Date(today);
 				expected.setDate(today.getDate() - i);
-				const expectedStr = expected.toISOString().slice(0, 10);
+				const expectedStr = expected.toLocaleDateString('en-CA');
 				if (rows[i].logDate !== expectedStr) break;
 				streak++;
 			}
@@ -146,10 +146,11 @@ export const logsResolvers = {
 				.update(foodEntries)
 				.set({
 					servingsConsumed:
-						validated.servingsConsumed != null
-							? String(validated.servingsConsumed)
-							: undefined,
+						validated.servingsConsumed != null ? String(validated.servingsConsumed) : undefined,
 					calories: validated.calories,
+					proteinG: validated.proteinG != null ? String(validated.proteinG) : undefined,
+					carbsG: validated.carbsG != null ? String(validated.carbsG) : undefined,
+					fatG: validated.fatG != null ? String(validated.fatG) : undefined,
 					mealType: validated.mealType
 				})
 				.where(eq(foodEntries.id, id))

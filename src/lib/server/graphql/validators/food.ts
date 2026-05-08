@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+export const lookupBarcodeSchema = z.object({
+	barcode: z.string().regex(/^\d{8,14}$/, 'Barcode must be 8–14 digits')
+});
+
 export const createFoodItemSchema = z.object({
 	name: z.string().min(1).max(100),
 	brand: z.string().max(100).optional(),

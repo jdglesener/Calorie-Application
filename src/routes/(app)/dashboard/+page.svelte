@@ -33,6 +33,9 @@
 					profile {
 						dailyCalorieGoal
 						displayName
+						proteinGoalG
+						carbsGoalG
+						fatGoalG
 					}
 				}
 			}
@@ -43,9 +46,10 @@
 	const log = $derived($dailyLogQuery.data?.dailyLog);
 	const streak = $derived($dailyLogQuery.data?.calorieStreak ?? 0);
 	const me = $derived($dailyLogQuery.data?.me);
-	const calorieGoal = $derived(
-		log?.calorieGoal ?? me?.profile?.dailyCalorieGoal ?? 2000
-	);
+	const calorieGoal = $derived(log?.calorieGoal ?? me?.profile?.dailyCalorieGoal ?? 2000);
+	const proteinGoal = $derived(me?.profile?.proteinGoalG ?? null);
+	const carbsGoal = $derived(me?.profile?.carbsGoalG ?? null);
+	const fatGoal = $derived(me?.profile?.fatGoalG ?? null);
 </script>
 
 <svelte:head>
@@ -60,7 +64,7 @@
 				{me?.profile?.displayName ?? me?.name ?? 'there'}
 			</h1>
 			<p class="text-sm text-gray-500 mt-0.5">
-				{new Date(data.today).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+				{new Date(data.today + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
 			</p>
 		</div>
 		{#if streak > 0}
@@ -82,6 +86,9 @@
 			protein={log?.totalProteinG ?? 0}
 			carbs={log?.totalCarbsG ?? 0}
 			fat={log?.totalFatG ?? 0}
+			{proteinGoal}
+			{carbsGoal}
+			{fatGoal}
 		/>
 
 		<div class="card">

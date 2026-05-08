@@ -57,6 +57,9 @@ export const logsTypeDefs = `#graphql
 	input UpdateFoodEntryInput {
 		servingsConsumed: Float
 		calories: Int
+		proteinG: Float
+		carbsG: Float
+		fatG: Float
 		mealType: MealType
 	}
 

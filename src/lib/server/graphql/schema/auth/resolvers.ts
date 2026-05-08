@@ -39,8 +39,10 @@ export const authResolvers = {
 
 			const mapped = {
 				displayName: input.displayName as string | undefined,
+				sex: input.sex as string | undefined,
 				heightCm: input.heightCm != null ? String(input.heightCm) : undefined,
 				weightKg: input.weightKg != null ? String(input.weightKg) : undefined,
+				targetWeightKg: input.targetWeightKg != null ? String(input.targetWeightKg) : undefined,
 				dateOfBirth: input.dateOfBirth as string | undefined,
 				activityLevel:
 					(input.activityLevel as string | undefined)?.toLowerCase() as
@@ -56,6 +58,9 @@ export const authResolvers = {
 					| 'gain'
 					| undefined,
 				dailyCalorieGoal: input.dailyCalorieGoal as number | undefined,
+				proteinGoalG: input.proteinGoalG as number | undefined,
+				carbsGoalG: input.carbsGoalG as number | undefined,
+				fatGoalG: input.fatGoalG as number | undefined,
 				updatedAt: new Date()
 			};
 
@@ -77,5 +82,12 @@ export const authResolvers = {
 			ctx.db.query.userProfiles.findFirst({
 				where: eq(userProfiles.userId, parent.id)
 			})
+	},
+
+	UserProfile: {
+		activityLevel: (parent: { activityLevel: string | null }) =>
+			parent.activityLevel?.toUpperCase() ?? null,
+		goalType: (parent: { goalType: string | null }) =>
+			parent.goalType?.toUpperCase() ?? null
 	}
 };

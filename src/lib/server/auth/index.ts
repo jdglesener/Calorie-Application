@@ -35,7 +35,7 @@ export const auth = betterAuth({
 		enabled: true,
 		window: 60,
 		max: 10,
-		storage: 'database'
+		storage: 'memory'
 	},
 	trustedOrigins: [env.PUBLIC_APP_URL]
 });
