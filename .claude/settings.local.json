@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\jorda\\\\OneDrive\\\\Documents\\\\Calorie Application\" -Recurse -Include \"*.svelte\", \"*.ts\", \"*.js\")",
+      "Bash(Select-Object FullName)"
+    ]
+  }
+}

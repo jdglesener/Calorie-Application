@@ -12,7 +12,7 @@ export const foodResolvers = {
 			{ query, limit = 20 }: { query: string; limit?: number },
 			ctx: GraphQLContext
 		) => {
-			requireAuth(ctx);
+			const user = requireAuth(ctx);
 			const cap = Math.min(limit, 50);
 			return ctx.db
 				.select()

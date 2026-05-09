@@ -1,11 +1,11 @@
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { foodItems } from '../src/lib/server/db/schema/food.js';
+import { foodItems } from '../src/lib/server/db/schema/food.ts';
 import { config } from 'dotenv';
 
 config({ path: '.env' });
 
-const client = postgres(process.env.DATABASE_URL!);
+const client = postgres(process.env.PROD_URL!);
 const db = drizzle(client);
 
 const foods = [
