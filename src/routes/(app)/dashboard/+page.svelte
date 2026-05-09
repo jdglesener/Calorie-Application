@@ -7,6 +7,7 @@
 	let { data }: { data: PageData } = $props();
 
 	const client = getContextClient();
+	const today = new Date().toLocaleDateString('en-CA');
 
 	const DASHBOARD_QUERY = gql`
 		query DashboardLog($date: Date!) {
@@ -40,7 +41,7 @@
 	`;
 
 	const dailyLogQuery = $derived(
-		queryStore({ client, query: DASHBOARD_QUERY, variables: { date: data.today } })
+		queryStore({ client, query: DASHBOARD_QUERY, variables: { date: today } })
 	);
 
 	const log = $derived($dailyLogQuery.data?.dailyLog);
@@ -64,7 +65,7 @@
 				{me?.profile?.displayName ?? me?.name ?? 'there'}
 			</h1>
 			<p class="text-sm text-gray-500 mt-0.5">
-				{new Date(data.today + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+				{new Date(today + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
 			</p>
 		</div>
 		{#if streak > 0}
@@ -94,7 +95,7 @@
 		<div class="card">
 			<div class="card-header flex items-center justify-between">
 				<h2 class="font-semibold text-gray-900">Today's log</h2>
-				<a href="/calories/{data.today}" class="btn-primary text-xs px-3 py-1.5">Add food</a>
+				<a href="/calories/{today}" class="btn-primary text-xs px-3 py-1.5">Add food</a>
 			</div>
 			{#if log?.entries?.length}
 				<ul class="divide-y divide-gray-100">
@@ -111,7 +112,7 @@
 			{:else}
 				<div class="card-body text-center py-10">
 					<p class="text-gray-500 text-sm">Nothing logged yet today.</p>
-					<a href="/calories/{data.today}" class="btn-primary mt-4 inline-flex">Log your first meal</a>
+					<a href="/calories/{today}" class="btn-primary mt-4 inline-flex">Log your first meal</a>
 				</div>
 			{/if}
 		</div>

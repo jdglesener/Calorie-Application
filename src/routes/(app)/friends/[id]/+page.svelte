@@ -39,7 +39,8 @@
 		}
 	`;
 
-	let selectedDate = $state(data.today);
+	const today = new Date().toLocaleDateString('en-CA');
+	let selectedDate = $state(today);
 
 	let logStore = $state(
 		queryStore({
@@ -74,7 +75,6 @@
 		return dt.toLocaleDateString('en-CA');
 	}
 
-	const today = new Date().toLocaleDateString('en-CA');
 	const isToday = $derived(selectedDate === today);
 </script>
 

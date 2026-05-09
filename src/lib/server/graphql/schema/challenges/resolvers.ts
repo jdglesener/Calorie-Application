@@ -107,7 +107,7 @@ export const challengesResolvers = {
 					startDate: validated.startDate,
 					endDate: validated.endDate,
 					isPublic: validated.isPublic ?? false,
-					status: 'draft'
+					status: 'active'
 				})
 				.returning();
 
