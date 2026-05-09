@@ -96,7 +96,7 @@
 		}
 	}
 
-	let meStore = $derived(queryStore({ client, query: ME_QUERY }));
+	let meStore = $state(queryStore({ client, query: ME_QUERY }));
 	const profile = $derived($meStore.data?.me?.profile);
 
 	let displayName = $state('');
