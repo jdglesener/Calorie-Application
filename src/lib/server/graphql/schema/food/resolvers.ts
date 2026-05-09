@@ -36,13 +36,14 @@ export const foodResolvers = {
 			let json: Record<string, unknown>;
 			try {
 				const params = new URLSearchParams({
+					action: 'process',
 					search_terms: query,
 					json: '1',
 					page_size: '15',
 					fields: 'code,product_name,product_name_en,brands,serving_size,nutriments'
 				});
 				const res = await fetch(
-					`https://world.openfoodfacts.org/api/v2/search?${params}`,
+					`https://world.openfoodfacts.org/cgi/search.pl?${params}`,
 					{ headers: { 'User-Agent': 'DisciplineApp/1.0 (personal calorie tracker)' }, signal: ctx.signal }
 				);
 				if (!res.ok) return [];
