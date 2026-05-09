@@ -29,6 +29,7 @@ export const foodTypeDefs = `#graphql
 
 	extend type Query {
 		searchFoods(query: String!, limit: Int): [FoodItem!]!
+		searchFoodsExternal(query: String!): [FoodItem!]!
 		foodItem(id: ID!): FoodItem
 		lookupBarcode(barcode: String!): FoodItem
 	}

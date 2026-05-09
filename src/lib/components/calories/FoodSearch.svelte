@@ -49,6 +49,13 @@
 	let createFat = $state<number | ''>('');
 	let creating = $state(false);
 
+	$effect(() => {
+		// Clear online results when query changes so stale results don't show
+		searchQuery;
+		onlineResults = [];
+		onlineError = '';
+	});
+
 	const searchStore = $derived(
 		searchQuery.trim().length >= 2
 			? queryStore({
@@ -112,6 +119,41 @@
 			}
 		}
 	`;
+
+	const SEARCH_FOODS_EXTERNAL_QUERY = gql`
+		query SearchFoodsExternal($q: String!) {
+			searchFoodsExternal(query: $q) {
+				id
+				name
+				brand
+				caloriesPerServing
+				servingSize
+				servingUnit
+				proteinG
+				carbsG
+				fatG
+			}
+		}
+	`;
+
+	let searchingOnline = $state(false);
+	let onlineResults = $state<FoodItem[]>([]);
+	let onlineError = $state('');
+
+	async function handleSearchOnline() {
+		if (searchQuery.trim().length < 2) return;
+		searchingOnline = true;
+		onlineError = '';
+		onlineResults = [];
+		const result = await client.query(SEARCH_FOODS_EXTERNAL_QUERY, { q: searchQuery.trim() }).toPromise();
+		searchingOnline = false;
+		if (result.error) {
+			onlineError = 'Could not reach Open Food Facts. Try again.';
+		} else {
+			onlineResults = result.data?.searchFoodsExternal ?? [];
+			if (onlineResults.length === 0) onlineError = 'No results found online.';
+		}
+	}
 
 	let adding = $state(false);
 
@@ -307,8 +349,50 @@
 						</li>
 					{/each}
 				</ul>
-			{:else if noResults}
-				<p class="text-sm text-gray-400 text-center py-2">No results found.</p>
+			{:else if noResults && !onlineResults.length}
+				<p class="text-sm text-gray-400 text-center py-2">No local results found.</p>
+			{/if}
+
+			{#if !selectedFood && onlineResults.length > 0}
+				<div class="space-y-1">
+					<p class="text-xs text-gray-400 px-1">Open Food Facts results</p>
+					<ul class="divide-y divide-gray-100 rounded-lg border border-gray-200 overflow-hidden max-h-64 overflow-y-auto">
+						{#each onlineResults as food}
+							<li>
+								<button
+									onclick={() => selectFood(food)}
+									class="w-full text-left px-4 py-3 hover:bg-brand-50 transition-colors"
+								>
+									<p class="text-sm font-medium text-gray-900">{food.name}</p>
+									<p class="text-xs text-gray-400">
+										{food.caloriesPerServing} cal · {food.servingSize}{food.servingUnit}
+										{food.brand ? `· ${food.brand}` : ''}
+									</p>
+								</button>
+							</li>
+						{/each}
+					</ul>
+				</div>
+			{/if}
+
+			{#if onlineError}
+				<p class="text-xs text-amber-600">{onlineError}</p>
+			{/if}
+
+			{#if !selectedFood && searchQuery.trim().length >= 2 && !onlineResults.length}
+				<button
+					type="button"
+					onclick={handleSearchOnline}
+					class="w-full text-sm text-brand-600 hover:text-brand-700 py-1.5 text-center hover:underline flex items-center justify-center gap-1.5"
+					disabled={searchingOnline}
+				>
+					{#if searchingOnline}
+						<div class="h-3.5 w-3.5 rounded-full border-2 border-brand-300 border-t-brand-600 animate-spin"></div>
+						Searching Open Food Facts…
+					{:else}
+						Search online (Open Food Facts)
+					{/if}
+				</button>
 			{/if}
 
 			{#if !selectedFood && (noResults || searchQuery.trim().length === 0)}

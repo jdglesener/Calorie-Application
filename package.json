@@ -25,6 +25,7 @@
     "@zxing/library": "^0.23.0",
     "better-auth": "^1.2.7",
     "drizzle-orm": "^0.45.2",
+    "fflate": "^0.8.2",
     "graphql": "^16.0.0",
     "graphql-yoga": "^5.0.0",
     "postgres": "^3.4.0",
