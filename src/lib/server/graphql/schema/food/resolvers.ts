@@ -91,16 +91,24 @@ export const foodResolvers = {
 
 			if (toInsert.length === 0) return [];
 
-			await ctx.db
-				.insert(foodItems)
-				.values(toInsert)
-				.onConflictDoNothing({ target: foodItems.externalId });
+			const allExternalIds = toInsert.map((x) => x.externalId);
 
-			const externalIds = toInsert.map((x) => x.externalId);
+			// Find which ones are already cached
+			const existing = await ctx.db
+				.select({ externalId: foodItems.externalId })
+				.from(foodItems)
+				.where(inArray(foodItems.externalId, allExternalIds));
+			const existingSet = new Set(existing.map((r) => r.externalId));
+
+			const newItems = toInsert.filter((x) => !existingSet.has(x.externalId));
+			if (newItems.length > 0) {
+				await ctx.db.insert(foodItems).values(newItems);
+			}
+
 			return ctx.db
 				.select()
 				.from(foodItems)
-				.where(inArray(foodItems.externalId, externalIds));
+				.where(inArray(foodItems.externalId, allExternalIds));
 		},
 
 		foodItem: async (_: unknown, { id }: { id: string }, ctx: GraphQLContext) => {

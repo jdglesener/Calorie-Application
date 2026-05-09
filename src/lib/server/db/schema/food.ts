@@ -1,4 +1,4 @@
-import { pgTable, text, integer, numeric, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { pgTable, text, integer, numeric, timestamp, boolean, index, unique } from 'drizzle-orm/pg-core';
 import { users } from './auth';
 
 export const foodItems = pgTable(
@@ -25,6 +25,7 @@ export const foodItems = pgTable(
 	},
 	(table) => [
 		index('food_items_name_idx').on(table.name),
-		index('food_items_created_by_idx').on(table.createdBy)
+		index('food_items_created_by_idx').on(table.createdBy),
+		unique('food_items_external_id_unique').on(table.externalId)
 	]
 );
