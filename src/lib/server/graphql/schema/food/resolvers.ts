@@ -39,7 +39,9 @@ export const foodResolvers = {
 					action: 'process',
 					search_terms: query,
 					json: '1',
-					page_size: '15',
+					page_size: '24',
+					sort_by: 'unique_scans_n',
+					lc: 'en',
 					fields: 'code,product_name,product_name_en,brands,serving_size,nutriments'
 				});
 				const res = await fetch(
