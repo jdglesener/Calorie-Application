@@ -7,13 +7,10 @@ export const createChallengeSchema = z
 	.object({
 		name: z.string().min(1).max(100),
 		description: z.string().max(1000).optional(),
-		challengeType: z.enum([
-			'calorie_limit',
-			'calorie_goal',
-			'step_goal',
-			'exercise_minutes',
-			'custom'
-		]),
+		challengeType: z.preprocess(
+			(v) => String(v).toLowerCase(),
+			z.enum(['calorie_limit', 'calorie_goal', 'step_goal', 'exercise_minutes', 'custom'])
+		),
 		targetValue: z.number().int().positive(),
 		startDate: dateString,
 		endDate: dateString,

@@ -15,6 +15,8 @@ export const socialTypeDefs = `#graphql
 	extend type Query {
 		friends: [FriendConnection!]!
 		pendingFriendRequests: [FriendConnection!]!
+		friendProfile(friendId: ID!): PublicUserProfile
+		friendDailyLog(friendId: ID!, date: Date!): DailyLog
 	}
 
 	extend type Mutation {

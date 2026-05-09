@@ -18,13 +18,15 @@
 	let {
 		entries,
 		date,
+		readonly = false,
 		onDeleted,
 		onEdited
 	}: {
 		entries: Entry[];
 		date: string;
-		onDeleted: () => void;
-		onEdited: () => void;
+		readonly?: boolean;
+		onDeleted?: () => void;
+		onEdited?: () => void;
 	} = $props();
 
 	const client = getContextClient();
@@ -115,7 +117,7 @@
 
 		saving = false;
 		editingId = null;
-		onEdited();
+		onEdited?.();
 	}
 
 	async function deleteEntry(id: string) {
@@ -124,7 +126,7 @@
 			query: DELETE_MUTATION,
 			variables: { id }
 		}).toPromise?.();
-		onDeleted();
+		onDeleted?.();
 	}
 </script>
 
@@ -142,7 +144,7 @@
 				<ul class="divide-y divide-gray-100">
 					{#each items as entry}
 						<li class="px-4 sm:px-5 py-3">
-							{#if editingId === entry.id}
+							{#if !readonly && editingId === entry.id}
 								<!-- Inline edit form -->
 								<div class="space-y-3">
 									<p class="text-sm font-medium text-gray-900">{entry.foodName}</p>
@@ -193,28 +195,42 @@
 							{:else}
 								<!-- Normal row -->
 								<div class="flex items-center gap-3">
-									<button
-										onclick={() => startEdit(entry)}
-										class="flex-1 min-w-0 text-left"
-									>
-										<p class="text-sm font-medium text-gray-900 truncate">{entry.foodName}</p>
-										<p class="text-xs text-gray-400">
-											{entry.servingsConsumed} × {entry.servingSize}{entry.servingUnit}
-											{#if entry.proteinG}· P: {Math.round(entry.proteinG)}g{/if}
-											{#if entry.carbsG}· C: {Math.round(entry.carbsG)}g{/if}
-											{#if entry.fatG}· F: {Math.round(entry.fatG)}g{/if}
-										</p>
-									</button>
+									{#if readonly}
+										<div class="flex-1 min-w-0">
+											<p class="text-sm font-medium text-gray-900 truncate">{entry.foodName}</p>
+											<p class="text-xs text-gray-400">
+												{entry.servingsConsumed} × {entry.servingSize}{entry.servingUnit}
+												{#if entry.proteinG}· P: {Math.round(entry.proteinG)}g{/if}
+												{#if entry.carbsG}· C: {Math.round(entry.carbsG)}g{/if}
+												{#if entry.fatG}· F: {Math.round(entry.fatG)}g{/if}
+											</p>
+										</div>
+									{:else}
+										<button
+											onclick={() => startEdit(entry)}
+											class="flex-1 min-w-0 text-left"
+										>
+											<p class="text-sm font-medium text-gray-900 truncate">{entry.foodName}</p>
+											<p class="text-xs text-gray-400">
+												{entry.servingsConsumed} × {entry.servingSize}{entry.servingUnit}
+												{#if entry.proteinG}· P: {Math.round(entry.proteinG)}g{/if}
+												{#if entry.carbsG}· C: {Math.round(entry.carbsG)}g{/if}
+												{#if entry.fatG}· F: {Math.round(entry.fatG)}g{/if}
+											</p>
+										</button>
+									{/if}
 									<span class="text-sm font-semibold text-gray-700 shrink-0">{entry.calories} cal</span>
-									<button
-										onclick={() => deleteEntry(entry.id)}
-										class="text-gray-300 hover:text-red-400 transition-colors shrink-0"
-										aria-label="Delete entry"
-									>
-										<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-										</svg>
-									</button>
+									{#if !readonly}
+										<button
+											onclick={() => deleteEntry(entry.id)}
+											class="text-gray-300 hover:text-red-400 transition-colors shrink-0"
+											aria-label="Delete entry"
+										>
+											<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+											</svg>
+										</button>
+									{/if}
 								</div>
 							{/if}
 						</li>

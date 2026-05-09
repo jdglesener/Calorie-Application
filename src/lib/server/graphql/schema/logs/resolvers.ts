@@ -1,5 +1,12 @@
-import { eq, and, between, desc, sql } from 'drizzle-orm';
-import { dailyLogs, foodEntries, foodItems } from '$lib/server/db/schema';
+import { eq, and, between, desc, sql, lte, gte } from 'drizzle-orm';
+import {
+	dailyLogs,
+	foodEntries,
+	foodItems,
+	challenges,
+	challengeParticipants,
+	challengeEntries
+} from '$lib/server/db/schema';
 import { requireAuth } from '$lib/server/auth/middleware';
 import {
 	upsertDailyLogSchema,
@@ -8,6 +15,64 @@ import {
 } from '$lib/server/graphql/validators/logs';
 import type { GraphQLContext } from '$lib/server/graphql/context';
 import { GraphQLError } from 'graphql';
+
+async function upsertChallengeEntries(
+	ctx: GraphQLContext,
+	userId: string,
+	logDate: string
+): Promise<void> {
+	const [logRow] = await ctx.db
+		.select({ id: dailyLogs.id })
+		.from(dailyLogs)
+		.where(and(eq(dailyLogs.userId, userId), eq(dailyLogs.logDate, logDate)))
+		.limit(1);
+
+	if (!logRow) return;
+
+	const [sumRow] = await ctx.db
+		.select({ total: sql<number>`coalesce(sum(${foodEntries.calories}), 0)` })
+		.from(foodEntries)
+		.where(eq(foodEntries.dailyLogId, logRow.id));
+
+	const totalCalories = Math.round(Number(sumRow?.total ?? 0));
+
+	const activeChallenges = await ctx.db
+		.select({ id: challenges.id })
+		.from(challenges)
+		.innerJoin(
+			challengeParticipants,
+			and(
+				eq(challengeParticipants.challengeId, challenges.id),
+				eq(challengeParticipants.userId, userId),
+				eq(challengeParticipants.status, 'accepted')
+			)
+		)
+		.where(
+			and(
+				eq(challenges.status, 'active'),
+				lte(challenges.startDate, logDate),
+				gte(challenges.endDate, logDate),
+				sql`${challenges.challengeType} IN ('calorie_limit', 'calorie_goal')`
+			)
+		);
+
+	if (activeChallenges.length === 0) return;
+
+	await ctx.db
+		.insert(challengeEntries)
+		.values(
+			activeChallenges.map((c) => ({
+				challengeId: c.id,
+				userId,
+				entryDate: logDate,
+				metricValue: totalCalories
+			}))
+		)
+		.onConflictDoUpdate({
+			target: [challengeEntries.challengeId, challengeEntries.userId, challengeEntries.entryDate],
+			set: { metricValue: totalCalories, updatedAt: new Date() }
+		});
+}
 
 export const logsResolvers = {
 	Query: {
@@ -120,6 +185,7 @@ export const logsResolvers = {
 				})
 				.returning();
 
+			await upsertChallengeEntries(ctx, user.id, validated.date);
 			return entry;
 		},
 
@@ -132,7 +198,7 @@ export const logsResolvers = {
 			const validated = updateFoodEntrySchema.parse(input);
 
 			const [existing] = await ctx.db
-				.select({ id: foodEntries.id })
+				.select({ id: foodEntries.id, logDate: dailyLogs.logDate })
 				.from(foodEntries)
 				.innerJoin(dailyLogs, eq(foodEntries.dailyLogId, dailyLogs.id))
 				.where(and(eq(foodEntries.id, id), eq(dailyLogs.userId, user.id)))
@@ -156,6 +222,7 @@ export const logsResolvers = {
 				.where(eq(foodEntries.id, id))
 				.returning();
 
+			await upsertChallengeEntries(ctx, user.id, existing.logDate);
 			return updated;
 		},
 
@@ -163,7 +230,7 @@ export const logsResolvers = {
 			const user = requireAuth(ctx);
 
 			const [entry] = await ctx.db
-				.select({ id: foodEntries.id })
+				.select({ id: foodEntries.id, logDate: dailyLogs.logDate })
 				.from(foodEntries)
 				.innerJoin(dailyLogs, eq(foodEntries.dailyLogId, dailyLogs.id))
 				.where(and(eq(foodEntries.id, id), eq(dailyLogs.userId, user.id)))
@@ -174,6 +241,7 @@ export const logsResolvers = {
 			}
 
 			await ctx.db.delete(foodEntries).where(eq(foodEntries.id, id));
+			await upsertChallengeEntries(ctx, user.id, entry.logDate);
 			return true;
 		}
 	},

@@ -1,8 +1,32 @@
 import { eq, and, or } from 'drizzle-orm';
-import { friends, users, userProfiles } from '$lib/server/db/schema';
+import { friends, users, userProfiles, dailyLogs } from '$lib/server/db/schema';
 import { requireAuth } from '$lib/server/auth/middleware';
 import type { GraphQLContext } from '$lib/server/graphql/context';
 import { GraphQLError } from 'graphql';
+
+async function assertFriendship(
+	ctx: GraphQLContext,
+	userId: string,
+	friendId: string
+): Promise<void> {
+	const [row] = await ctx.db
+		.select({ id: friends.id })
+		.from(friends)
+		.where(
+			and(
+				or(
+					and(eq(friends.requesterId, userId), eq(friends.addresseeId, friendId)),
+					and(eq(friends.requesterId, friendId), eq(friends.addresseeId, userId))
+				),
+				eq(friends.status, 'accepted')
+			)
+		)
+		.limit(1);
+
+	if (!row) {
+		throw new GraphQLError('Not authorized', { extensions: { code: 'FORBIDDEN' } });
+	}
+}
 
 async function getPublicProfile(ctx: GraphQLContext, userId: string) {
 	const [row] = await ctx.db
@@ -38,6 +62,31 @@ export const socialResolvers = {
 				status: r.status.toUpperCase(),
 				createdAt: r.createdAt
 			}));
+		},
+
+		friendProfile: async (
+			_: unknown,
+			{ friendId }: { friendId: string },
+			ctx: GraphQLContext
+		) => {
+			const user = requireAuth(ctx);
+			await assertFriendship(ctx, user.id, friendId);
+			return getPublicProfile(ctx, friendId);
+		},
+
+		friendDailyLog: async (
+			_: unknown,
+			{ friendId, date }: { friendId: string; date: string },
+			ctx: GraphQLContext
+		) => {
+			const user = requireAuth(ctx);
+			await assertFriendship(ctx, user.id, friendId);
+			const [log] = await ctx.db
+				.select()
+				.from(dailyLogs)
+				.where(and(eq(dailyLogs.userId, friendId), eq(dailyLogs.logDate, date)))
+				.limit(1);
+			return log ?? null;
 		},
 
 		pendingFriendRequests: async (_: unknown, __: unknown, ctx: GraphQLContext) => {
