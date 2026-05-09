@@ -6,12 +6,14 @@ export type GraphQLContext = {
 	db: DB;
 	user: InferSelectModel<typeof users> | null;
 	sessionId: string | null;
+	signal: AbortSignal;
 };
 
-export function createContext(locals: App.Locals): GraphQLContext {
+export function createContext(locals: App.Locals, request: Request): GraphQLContext {
 	return {
 		db,
 		user: locals.user as InferSelectModel<typeof users> | null,
-		sessionId: locals.session?.id ?? null
+		sessionId: locals.session?.id ?? null,
+		signal: request.signal
 	};
 }

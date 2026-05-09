@@ -6,8 +6,8 @@ import { env } from '$env/dynamic/private';
 export const yoga = createYoga({
 	schema,
 	context: (executionContext) => {
-		const locals = (executionContext as { locals: App.Locals }).locals;
-		return createContext(locals);
+		const ctx = executionContext as unknown as { locals: App.Locals; request: Request };
+		return createContext(ctx.locals, ctx.request);
 	},
 	graphqlEndpoint: '/api/graphql',
 	fetchAPI: { Response, Request },

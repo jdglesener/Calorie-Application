@@ -43,7 +43,7 @@ export const foodResolvers = {
 				});
 				const res = await fetch(
 					`https://world.openfoodfacts.org/api/v2/search?${params}`,
-					{ headers: { 'User-Agent': 'DisciplineApp/1.0 (personal calorie tracker)' } }
+					{ headers: { 'User-Agent': 'DisciplineApp/1.0 (personal calorie tracker)' }, signal: ctx.signal }
 				);
 				if (!res.ok) return [];
 				json = await res.json() as Record<string, unknown>;
@@ -126,7 +126,7 @@ export const foodResolvers = {
 			try {
 				const res = await fetch(
 					`https://world.openfoodfacts.org/api/v0/product/${validBarcode}.json`,
-					{ headers: { 'User-Agent': 'DisciplineApp/1.0 (personal calorie tracker)' } }
+					{ headers: { 'User-Agent': 'DisciplineApp/1.0 (personal calorie tracker)' }, signal: ctx.signal }
 				);
 				if (!res.ok) return null;
 				json = await res.json() as Record<string, unknown>;
